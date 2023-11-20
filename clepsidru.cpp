@@ -6,71 +6,60 @@ int clepsidra[MAX_CLEPSIDRE][MAX_POZITII];
 int main()
 {
 	ifstream citeste("clepsidru.in");
-	int nrClepsidre, nrBoabe, nrStari;
+	int nrClepsidre, nrBoabe, nrStari, nrBoabeSus,
+	    nrBoabeJos, nrClepsidraPrimulBob, nrClepsidraUltimulBob,
+	    pozitiaPrecedenta;
 	citeste >> nrClepsidre >> nrBoabe;
 	ofstream scrie("clepsidru.out");
 	scrie << nrClepsidre + nrBoabe -1 << '\n'; // rezultatul primului experiment
-	clepsidra[0][0] = nrBoabe;
-	int pozitiaInitiala = 1;
+	nrBoabeSus = nrBoabe, nrBoabeJos = 0;
+	nrClepsidraPrimulBob = nrClepsidraUltimulBob = 0;
+	pozitiaPrecedenta = 1;
 	citeste >> nrStari;
 	while (nrStari > 0)
 	{
-		int nrSecunde, pozitie, i, j;
-		citeste >> nrSecunde >> pozitie;
-		if (pozitie != pozitiaInitiala)
+		int nrSecunde, pozitiaCurenta;
+		citeste >> nrSecunde >> pozitiaCurenta;
+		if (pozitiaCurenta != pozitiaPrecedenta)
+			swap(nrBoabeSus, nrBoabeJos);
+		while (nrSecunde > 0)
 		{
-			// rastorn clepsidrele
-			if (pozitiaInitiala == 1)
+			if (nrBoabeSus > 0)
 			{
-				for (i = 0; i < nrClepsidre-1; i++)
-				{
-					clepsidra[i][1] += clepsidra[i+1][0];
-					clepsidra[i+1][0] = 0;
-				}
+				nrBoabeSus--;
+				if (nrClepsidraUltimulBob == nrClepsidre-1)
+					nrBoabeJos++;
+				else if (nrClepsidraUltimulBob < nrClepsidre-1)
+					nrClepsidraUltimulBob++;
 			}
-			else
+			else if (nrClepsidraPrimulBob < nrClepsidre-1)
 			{
-				for (i = nrClepsidre-1; i > 0; i--)
-				{
-					clepsidra[i][0] += clepsidra[i-1][1];
-					clepsidra[i-1][1] = 0;
-				}
+				nrBoabeJos++;
+				nrClepsidraPrimulBob++;
 			}
+			nrSecunde--;
 		}
-		for (i = 0; i < nrSecunde; i++)
-		{
-			// simulez trecerea timpului in clepsidru
-			// in functie de pozitie
-			if (pozitie == 1)
-			{
-				for (j = nrClepsidre-1; j >= 0; j--)
-					if (clepsidra[j][0])
-					{
-						clepsidra[j][0]--;
-						if (j == nrClepsidre-1)
-							clepsidra[j][1]++;
-						else
-							clepsidra[j+1][0]++;
-					}
-			}
-			else
-			{
-				for (j = 0; j < nrClepsidre; j++)
-					if (clepsidra[j][1])
-					{
-						clepsidra[j][1]--;
-						if (j == 0)
-							clepsidra[j][0]++;
-						else
-							clepsidra[j-1][1]++;
-					}
-			}
-		}
-		pozitiaInitiala = pozitie;
+		pozitiaPrecedenta = pozitiaCurenta;
 		nrStari--;
 	}
 	citeste.close();
-	for (int i = 0; i < nrClepsidre; i++)
+	int i;
+	for (i = nrClepsidraPrimulBob; i <= nrClepsidraUltimulBob; i++)
+		if (pozitiaPrecedenta == 1)
+			clepsidra[i][0] = 1;
+		else
+			clepsidra[nrClepsidre-i-1][1] = 1;
+	if (pozitiaPrecedenta == 1)
+	{
+		clepsidra[0][0] = nrBoabeSus;
+		clepsidra[nrClepsidre-1][1] = nrBoabeJos;
+	}
+	else
+	{
+		clepsidra[0][0] = nrBoabeJos;
+		clepsidra[nrClepsidre-1][1] = nrBoabeSus;
+	}
+	for (i = 0; i < nrClepsidre; i++)
 		scrie << clepsidra[i][0] << ' ' << clepsidra[i][1] << '\n';
 	scrie.close();
 	return 0;
