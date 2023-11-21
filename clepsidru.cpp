@@ -21,21 +21,48 @@ int main()
 		int nrSecunde, pozitiaCurenta;
 		citeste >> nrSecunde >> pozitiaCurenta;
 		if (pozitiaCurenta != pozitiaPrecedenta)
+		{
 			swap(nrBoabeSus, nrBoabeJos);
+			if (nrClepsidraPrimulBob == 0
+			    && nrClepsidraUltimulBob < nrClepsidre
+			    && nrClepsidraUltimulBob > 0)
+			{
+				nrClepsidraPrimulBob = nrClepsidre - nrClepsidraUltimulBob;
+				nrClepsidraUltimulBob = nrClepsidre;
+			}
+			else if (nrClepsidraPrimulBob > 0
+				 && nrClepsidraUltimulBob >= nrClepsidraPrimulBob
+				 && nrClepsidraUltimulBob < nrClepsidre)
+			{
+				nrClepsidraPrimulBob = nrClepsidre - nrClepsidraUltimulBob;
+				nrClepsidraUltimulBob = nrClepsidraPrimulBob + 1;
+			}
+			else if (nrClepsidraPrimulBob > 0
+				 && nrClepsidraUltimulBob == nrClepsidre)
+			{
+				nrClepsidraUltimulBob = nrClepsidre - nrClepsidraPrimulBob;
+				nrClepsidraPrimulBob = 0;
+			}
+		}
 		while (nrSecunde > 0)
 		{
+			if (nrClepsidraUltimulBob > 0
+			    && nrClepsidraUltimulBob < nrClepsidre)
+				nrClepsidraUltimulBob++;
+			if (nrClepsidraUltimulBob == nrClepsidre)
+				nrBoabeJos++;
+			if (nrClepsidraPrimulBob > 0
+			    && nrClepsidraPrimulBob < nrClepsidre)
+				nrClepsidraPrimulBob++;
+			if (nrClepsidraPrimulBob == nrClepsidre)
+				nrClepsidraPrimulBob = nrClepsidraUltimulBob = 0;
 			if (nrBoabeSus > 0)
 			{
 				nrBoabeSus--;
-				if (nrClepsidraUltimulBob == nrClepsidre-1)
-					nrBoabeJos++;
-				else if (nrClepsidraUltimulBob < nrClepsidre-1)
-					nrClepsidraUltimulBob++;
-			}
-			else if (nrClepsidraPrimulBob < nrClepsidre-1)
-			{
-				nrBoabeJos++;
-				nrClepsidraPrimulBob++;
+				if (nrBoabeSus == 0)
+					nrClepsidraPrimulBob = 1;
+				if (nrClepsidraUltimulBob == 0)
+					nrClepsidraUltimulBob = 1;
 			}
 			nrSecunde--;
 		}
